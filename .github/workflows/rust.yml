@@ -26,7 +26,7 @@ jobs:
       run: cargo test --verbose
     
     - name: Make website
-      run: mkdir site && cargo run && mv index.html site/index.html
+      run: mkdir site && cargo run && mv index.html Roboto-Regular.ttf site
 
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4
