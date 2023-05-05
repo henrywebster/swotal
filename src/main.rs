@@ -2,6 +2,7 @@ extern crate mustache;
 
 use mustache::MapBuilder;
 use serde::Serialize;
+use sqlite::State;
 use std::fs;
 use std::fs::File;
 
@@ -11,7 +12,13 @@ struct Post {
     link: String,
 }
 
-fn make_website(template: &str) {
+#[derive(Serialize)]
+struct Meta {
+    title: String,
+    description: String,
+}
+
+fn make_website(template: &str, conn: &sqlite::Connection) {
     // TODO use stdin if available
     // TODO use environment variables
     let template = mustache::compile_str(
@@ -19,27 +26,38 @@ fn make_website(template: &str) {
     )
     .unwrap();
 
-    // TODO (get from DB instead)
-    let post = Post {
-        title: "Bernie Slamders".into(),
-        link: "https://hwebs.info".into(),
-    };
-    // TODO (get from DB instead)
-    let post2 = Post {
-        title: "Bernie Slamders".into(),
-        link: "https://hwebs.info".into(),
-    };
+    let mut statement_posts = conn
+        .prepare("SELECT title, link FROM posts")
+        .expect("Could not create statement");
 
-    // convert from sql to this
-    //    let data = MapBuilder::new()
-    //        .insert_vec("posts", |builder| builder.push(&post).expect("test"))
-    //        .build();
+    let mut posts = Vec::new();
 
-    let posts = vec![post, post2];
+    // TODO integrate directly in MapBuilder with the insert func?
+    while let Ok(State::Row) = statement_posts.next() {
+        let post = Post {
+            title: statement_posts.read::<String, _>("title").unwrap(),
+            link: statement_posts.read::<String, _>("link").unwrap(),
+        };
+        posts.push(post);
+    }
+
+    let mut statement_meta = conn
+        .prepare("SELECT title, description FROM meta LIMIT 1")
+        .expect("Could not create statement");
+
+    let meta = match statement_meta.next() {
+        Ok(_) => Meta {
+            title: statement_meta.read::<String, _>("title").unwrap(),
+            description: statement_meta.read::<String, _>("description").unwrap(),
+        },
+        Err(_) => panic!()
+    };
 
     let data = MapBuilder::new()
         .insert("posts", &posts)
         .expect("Could not encode")
+        .insert("meta", &meta)
+        .expect("Could not encode meta.")
         .build();
 
     let mut file = File::create("index.html").expect("Could not create file");
@@ -47,5 +65,9 @@ fn make_website(template: &str) {
 }
 
 fn main() {
-    make_website(&("index.mustache"));
+    let db_file = "website.db";
+    let template_file = "index.mustache";
+    let connection = sqlite::open(db_file).expect("Could not open sqlite connection");
+
+    make_website(template_file, &connection);
 }
