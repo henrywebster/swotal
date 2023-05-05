@@ -22,7 +22,3 @@ jobs:
       run: cargo test --verbose
     - name: Make website
       run: mkdir site && cargo run && mv index.html site/index.html
-    - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: 'site'
