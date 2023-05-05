@@ -10,6 +10,7 @@ use std::fs::File;
 struct Post {
     title: String,
     link: String,
+    category: String,
 }
 
 #[derive(Serialize)]
@@ -27,7 +28,7 @@ fn make_website(template: &str, conn: &sqlite::Connection) {
     .unwrap();
 
     let mut statement_posts = conn
-        .prepare("SELECT title, link FROM posts")
+        .prepare("SELECT title, link, name AS category FROM posts LEFT JOIN tags WHERE posts.category = tags.id ORDER BY created_at DESC")
         .expect("Could not create statement");
 
     let mut posts = Vec::new();
@@ -37,6 +38,7 @@ fn make_website(template: &str, conn: &sqlite::Connection) {
         let post = Post {
             title: statement_posts.read::<String, _>("title").unwrap(),
             link: statement_posts.read::<String, _>("link").unwrap(),
+            category: statement_posts.read::<String, _>("category").unwrap(),
         };
         posts.push(post);
     }
@@ -50,7 +52,7 @@ fn make_website(template: &str, conn: &sqlite::Connection) {
             title: statement_meta.read::<String, _>("title").unwrap(),
             description: statement_meta.read::<String, _>("description").unwrap(),
         },
-        Err(_) => panic!()
+        Err(_) => panic!(),
     };
 
     let data = MapBuilder::new()
