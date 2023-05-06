@@ -29,9 +29,11 @@
             }
 
             .button {
+                display: inline;
                 background-color: silver;
                 border-radius: 10px;
                 padding: 0 10px;
+                margin: 5px 5px;
             }
 
             @media(max-width: 1200px) {
@@ -39,16 +41,16 @@
                     max-width: 90%;
                 }
                 h1 {
-                    font-size: 4em;
+                    font-size: 6em;
                 }
                 h2 {
-                    font-size: 2em;
+                    font-size: 4em;
                 }
                 p {
-                    font-size: 1.5em;
+                    font-size: 3em;
                 }
                 .button {
-                    font-size: 1.5em;
+                    font-size: 3em;
                     border-radius: 10px;
                 }
             }
@@ -65,11 +67,15 @@
                 margin: 4px 0;
             }
 
-            .detail {
+            .tags {
                 display: flex;
                 min-width: 30%;
                 justify-content: right;
+
+                list-style-type: none;
+                flex-wrap: wrap;
             }
+
         </style>
     </head>
     <body>
@@ -80,29 +86,29 @@
             </p>
             <hr>
             <section>
-                <a href=https://youtu.be/JQOf8w-i5-A?t=2728>
+                <a href="https://youtu.be/JQOf8w-i5-A?t=2728">
                     <h2>Let&#39;s Go Wongos - Epilogue</h2>
                 </a>
-                <div class="detail">
-                    <div class="button">Music</div>
-                    <div class="button">Animation</div>
-                </div>
+                <ul class="tags">
+                        <li class="button">Music</li>
+                        <li class="button">Animation</li>
+                </ul>
             </section>
             <section>
-                <a href=https://highforevergame.com>
+                <a href="https://highforevergame.com">
                     <h2>Cody&#39;s Ocean Cleanup</h2>
                 </a>
-                <div class="detail">
-                    <div class="button">Games</div>
-                </div>
+                <ul class="tags">
+                        <li class="button">Games</li>
+                </ul>
             </section>
             <section>
-                <a href=https://deathrayop.bandcamp.com/album/urbane-living>
+                <a href="https://deathrayop.bandcamp.com/album/urbane-living">
                     <h2>Death Ray of Peace - Urbane Living</h2>
                 </a>
-                <div class="detail">
-                    <div class="button">Music</div>
-                </div>
+                <ul class="tags">
+                        <li class="button">Music</li>
+                </ul>
             </section>
         </main>
     </body>
