@@ -12,16 +12,45 @@
                 src: url("Roboto-Regular.ttf");
             }
 
-
 	        main {
 		        margin: auto;
 		        padding: 1.5rem;
-                max-width: 90%;
+                max-width: 70%;
 		        font-family: "Roboto-Regular", sans-serif;
 	        }
 
+            h1 {
+                font-size: 2em;
+            }
+
             h2 {
                 margin: 0;
+                font-size: 1.5em;
+            }
+
+            .button {
+                background-color: silver;
+                border-radius: 10px;
+                padding: 0 10px;
+            }
+
+            @media(max-width: 1200px) {
+                main {
+                    max-width: 90%;
+                }
+                h1 {
+                    font-size: 4em;
+                }
+                h2 {
+                    font-size: 2em;
+                }
+                p {
+                    font-size: 1.5em;
+                }
+                .button {
+                    font-size: 1.5em;
+                    border-radius: 10px;
+                }
             }
 
             a { 
@@ -41,16 +70,6 @@
                 min-width: 30%;
                 justify-content: right;
             }
-            
-            .button {
-                background-color: silver;
-                border-radius: 10px;
-                padding: 0 10px;
-            }
-
-            .item {
-            }
-
         </style>
     </head>
     <body>
