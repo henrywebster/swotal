@@ -33,8 +33,11 @@ fn get_tags_by_post(id: i64, conn: &sqlite::Connection) -> Vec<String> {
 }
 
 fn get_posts(conn: &sqlite::Connection) -> Vec<Post> {
+    // TODO remove category column from posts table
+    // TODO add explicit ID column to posts for foreign key
+    // TODO fix definition of post_tags to use foreign keys
     let mut statement = conn
-        .prepare("SELECT id, title, link, name AS category FROM posts LEFT JOIN tags ON posts.category = tags.id ORDER BY created_at DESC")
+        .prepare("SELECT rowid AS id, title, link FROM posts ORDER BY created_at DESC")
         .expect("Could not create statement");
 
     let mut posts = Vec::new();
