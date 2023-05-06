@@ -85,8 +85,9 @@
                     <h2>{{title}}</h2>
                 </a>
                 <div class="detail">
-                    <div class="button">{{category}}</div>
-                    <i>{{date}}</i>
+                    {{#tags}}
+                    <div class="button">{{.}}</div>
+                    {{/tags}}
                 </div>
             </section>
             {{/posts}}

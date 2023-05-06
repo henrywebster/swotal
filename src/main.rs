@@ -10,7 +10,7 @@ use std::fs::File;
 struct Post {
     title: String,
     link: String,
-    category: String,
+    tags: Vec<String>,
 }
 
 #[derive(Serialize)]
@@ -19,9 +19,22 @@ struct Meta {
     description: String,
 }
 
+fn get_tags_by_post(id: i64, conn: &sqlite::Connection) -> Vec<String> {
+    let mut statement = conn
+        .prepare("SELECT name FROM post_tags LEFT JOIN tags ON post_tags.tag_id = tags.id WHERE post_id = ?")
+        .expect("Could not prepare statement");
+    statement.bind((1, id)).expect("Could not bind ID");
+
+    let mut tags = Vec::new();
+    while let Ok(State::Row) = statement.next() {
+        tags.push(statement.read::<String, _>("name").unwrap());
+    }
+    return tags;
+}
+
 fn get_posts(conn: &sqlite::Connection) -> Vec<Post> {
     let mut statement = conn
-        .prepare("SELECT title, link, name AS category FROM posts LEFT JOIN tags WHERE posts.category = tags.id ORDER BY created_at DESC")
+        .prepare("SELECT id, title, link, name AS category FROM posts LEFT JOIN tags ON posts.category = tags.id ORDER BY created_at DESC")
         .expect("Could not create statement");
 
     let mut posts = Vec::new();
@@ -31,7 +44,7 @@ fn get_posts(conn: &sqlite::Connection) -> Vec<Post> {
         let post = Post {
             title: statement.read::<String, _>("title").unwrap(),
             link: statement.read::<String, _>("link").unwrap(),
-            category: statement.read::<String, _>("category").unwrap(),
+            tags: get_tags_by_post(statement.read::<i64, _>("id").unwrap(), conn),
         };
         posts.push(post);
     }
