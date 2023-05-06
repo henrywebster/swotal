@@ -29,9 +29,11 @@
             }
 
             .button {
+                display: inline;
                 background-color: silver;
                 border-radius: 10px;
                 padding: 0 10px;
+                margin: 5px 5px;
             }
 
             @media(max-width: 1200px) {
@@ -39,16 +41,16 @@
                     max-width: 90%;
                 }
                 h1 {
-                    font-size: 4em;
+                    font-size: 6em;
                 }
                 h2 {
-                    font-size: 2em;
+                    font-size: 4em;
                 }
                 p {
-                    font-size: 1.5em;
+                    font-size: 3em;
                 }
                 .button {
-                    font-size: 1.5em;
+                    font-size: 3em;
                     border-radius: 10px;
                 }
             }
@@ -65,11 +67,15 @@
                 margin: 4px 0;
             }
 
-            .detail {
+            .tags {
                 display: flex;
                 min-width: 30%;
                 justify-content: right;
+
+                list-style-type: none;
+                flex-wrap: wrap;
             }
+
         </style>
     </head>
     <body>
@@ -81,14 +87,14 @@
             <hr>
             {{#posts}}
             <section>
-                <a href={{link}}>
+                <a href="{{{link}}}">
                     <h2>{{title}}</h2>
                 </a>
-                <div class="detail">
-                    {{#tags}}
-                    <div class="button">{{.}}</div>
-                    {{/tags}}
-                </div>
+                <ul class="tags">
+                        {{#tags}}
+                        <li class="button">{{.}}</li>
+                        {{/tags}}
+                </ul>
             </section>
             {{/posts}}
         </main>
