@@ -19,6 +19,12 @@ struct Meta {
     description: String,
 }
 
+#[derive(Serialize)]
+struct Social {
+    name: String,
+    link: String,
+}
+
 fn get_tags_by_post(id: i64, conn: &sqlite::Connection) -> Vec<String> {
     let mut statement = conn
         .prepare("SELECT name FROM post_tags LEFT JOIN tags ON post_tags.tag_id = tags.id WHERE post_id = ?")
@@ -69,6 +75,23 @@ fn get_meta(conn: &sqlite::Connection) -> Meta {
     return meta;
 }
 
+fn get_socials(conn: &sqlite::Connection) -> Vec<Social> {
+    let mut statement = conn
+        .prepare("SELECT name, link FROM socials ORDER BY name")
+        .expect("Could not create statement");
+
+    let mut socials = Vec::new();
+
+    while let Ok(State::Row) = statement.next() {
+        let social = Social {
+            name: statement.read::<String, _>("name").unwrap(),
+            link: statement.read::<String, _>("link").unwrap(),
+        };
+        socials.push(social);
+    }
+    return socials;
+}
+
 fn make_website(template: &str, conn: &sqlite::Connection) {
     // TODO use stdin if available
     // TODO use environment variables
@@ -79,12 +102,15 @@ fn make_website(template: &str, conn: &sqlite::Connection) {
 
     let posts = get_posts(conn);
     let meta = get_meta(conn);
+    let socials = get_socials(conn);
 
     let data = MapBuilder::new()
         .insert("posts", &posts)
         .expect("Could not encode")
         .insert("meta", &meta)
-        .expect("Could not encode meta.")
+        .expect("Could not encode meta")
+        .insert("socials", &socials)
+        .expect("Could not encode socials")
         .build();
 
     let mut file = File::create("index.html").expect("Could not create file");
